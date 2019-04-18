@@ -18,7 +18,7 @@
             <p>FNST-在线笔试系统</p>
         </div>
 
-        <form class="layui-form" id="form">
+        <div class="layui-form" id="form">
         <div class="layui-input-inline">
             <input type="text" name="username"id="username" required lay-verify="required" placeholder="用户名" autocomplete="off"
                    class="layui-input">
@@ -30,47 +30,47 @@
          <input value="登录" style="width:100%;" type="submit" id="login">
 
         <hr/>
-       </form>
+       </div>
     </div>
     <div class="copyright"> by:&nbsp;FNST--版权所有©2019</div>
 </div>
 <div style="text-align:center;">
 </div>
 </body>
-<script src="./layui/layui.js"></script>
-<script src="admin/js/common.js"></script>
+<!--<script src="./layui/layui.js"></script>-->
+<script type="text/javascript" src="js/jquery.min.js" ></script>
 <script>
-	layui.use(['form','layer','jquery'], function () {
- 
-      
-        var $ = layui.jquery;
-        var un=$("#username").val();
-        var pw=$("#password").val();
-       // FormData
+
         $("#login").click(function(){
-           console.log($( '.layui-form').serialize());
+      	
             $.ajax({
+            	type:'post',
                 url:'http://localhost:8080/login',
-                data:$( '#form').serialize(),
+                data:{
+                	username:$("#username").val(),
+                	password:$("#password").val()
+                },
                 dataType:'json',
-                type:'post',
-                success:function (data) {
-                	alert(data);
-//                  if (data == '1'){
-//                      location.href = "../index.php";
-//                  }else{
-//                      layer.msg('登录名或密码错误');
-//                  }
-                }
-            })
-        
+                async:true,
+                success:function(msg) {
+                  	localStorage.setItem("token",msg.data);
+                  	
+//              	alert("success"+msg.data+"  "+msg.msg)
+//              	console.log("success"+msg);
+               		location.href = "index.html";
+               },
+               error: function(msg) {
+               	alert("登录失败"+msg); 
+               }
+			})
+       
         })
       
       
 
 
-    });
+
 </script>
 	
-</script>
+
 </html>
