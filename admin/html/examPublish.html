@@ -24,7 +24,7 @@
 							<div class="layui-form-item">
 								<label class="layui-form-label">笔试者：</label>
 								<div class="layui-input-block">
-									<input type="text" name="title" lay-verify="title" autocomplete="off" placeholder="请输入文章标题" class="layui-input">
+									
 								</div>
 							</div>
 							<!--橙色分割线-->
@@ -33,10 +33,7 @@
 								<label class="layui-form-label">笔试题：</label>
 							</div>
 
-							<!--存放内容-->
-							<textarea class="layui-textarea" id="LAY_demo1" style="display: none">
-                     
-                   			</textarea>
+							
 							<hr class="layui-bg-red">
 							<div class="layui-form-item">
 								<button class="layui-btn layui-form-label" style="width:100px; background-color:#007DDB;padding-right: 20px;">生成URL</button>
@@ -57,7 +54,24 @@
 			</div>
 		</div>
 		<script src="../../layui/layui.js"></script>
+		<script type="text/javascript" src="../../js/jquery.min.js" ></script>
 		<script>
+			 $.ajax({
+            	type:'get',
+				url:'http://localhost:8080/getUserList?token='+localStorage.token,
+                data:{
+                	page:0
+                },
+                dataType:'json',
+                async:true,
+                success:function(msg) {
+                  	alert(msg.data);
+               },
+               error: function(msg) {
+               	alert("获取用户失败"); 
+               }
+			})
+       
 			layui.use('layedit', function() {
 				var layedit = layui.layedit,
 					$ = layui.jquery;
