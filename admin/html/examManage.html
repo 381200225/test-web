@@ -23,11 +23,11 @@
 			<div class="layui-row layui-col-space15">
 				<div class="layui-col-md12">
 					<div class="layui-card">
-						<div class="layui-card-header">笔试者列表</div>
-						<form action="" method="post">
-							<div class="layui-card-body">
-								<div class="layui-form-item">
-									<!--<div class="layui-inline">
+						<div class="layui-card-header">笔试管理</div>
+
+						<div class="layui-card-body">
+							<div class="layui-form-item">
+								<!--<div class="layui-inline">
 										<label class="layui-form-label">笔试者:</label>
 										<div class="layui-input-inline">
 											<input type="text" name="text" name="queryBut" placeholder="请输入需要查询的笔试者" lay-verify="required" autocomplete="off" class="layui-input">
@@ -35,13 +35,13 @@
 									</div>
 									<button class="layui-btn layui-btn-warm layui-btn-radius">点击查询</button>
 									-->
-									<div>
-										<button class="layui-btn " id="addBs"><a style="color:white" > <i class="layui-icon">&#xe608;</i>发布笔试</a></button>
-									</div>
+								<div>
+									<button class="layui-btn " id="addBs"><a style="color:white"  href="examPublish.html" target="iframe"> <i class="layui-icon">&#xe608;</i>发布笔试</a></button>
 								</div>
-								<table id="demo" lay-filter="test"></table>
 							</div>
-						</form>
+							<table id="demo" lay-filter="test"></table>
+						</div>
+
 					</div>
 				</div>
 			</div>
@@ -49,30 +49,27 @@
 
 		<script type="text/html" id="barDemo">
 			{{# if(d.startTime == null) {}}
-				<a class="layui-btn  layui-btn-xs" lay-event="del">编辑</a> 
+			<a class="layui-btn  layui-btn-xs" lay-event="edit">编辑</a>
 			{{#} if(d.startTime != null && d.endTime == null) {}}
-				<a class="layui-btn  layui-btn-xs" lay-event="del">查看</a> 
+			<a class="layui-btn  layui-btn-xs" lay-event="view">查看</a>
 			{{#} if(d.startTime != null && d.endTime != null) {}}
-				<a class="layui-btn  layui-btn-xs" lay-event="del">查看</a> 
-			{{#}}}
-			<!--<a class="layui-btn  layui-btn-xs" lay-event="del">编辑</a>
-			<a class="layui-btn  layui-btn-xs" lay-event="del">查看</a>
-			<a class="layui-btn  layui-btn-xs" lay-event="del">回放</a>-->
-		</script>
-		<script type="text/html" id="titleTpl">
-			{{# if(d.startTime == null) {}}
-				<a class="layui-btn  layui-btn-xs" lay-event="del">编辑</a> 
-			{{#} if(d.startTime != null && d.endTime == null) {}}
-				<a class="layui-btn  layui-btn-xs" lay-event="del">查看</a> 
-			{{#} if(d.startTime != null && d.endTime != null) {}}
-				<a class="layui-btn  layui-btn-xs" lay-event="del">回放</a> 
+			<a class="layui-btn  layui-btn-xs" lay-event="playback">回放</a>
 			{{#}}}
 		</script>
+
 		<script src="../../layui/layui.js"></script>
+		<script src="../js/common.js"></script>
 		<script type="text/javascript" src="../../js/jquery.min.js"></script>
 		<script>
-			var url = "localhost:8080/getUserList?token=" + localStorage.token;
-
+			function formatDate(now) {
+				var year = now.getFullYear();
+				var month = now.getMonth() + 1;
+				var date = now.getDate();
+				var hour = now.getHours();
+				var minute = now.getMinutes();
+				var second = now.getSeconds();
+				return year + "-" + month + "-" + date + " " + hour + ":" + minute + ":" + second;
+			}
 			layui.use('table', function() {
 				var table = layui.table;
 				//第一个实例
@@ -80,7 +77,7 @@
 					elem: '#demo',
 					height: 500,
 					//					    url: "../data/sort.json",
-					url: 'http://localhost:8080/getUserList?token=' + localStorage.token,
+					url :host()+ "/getUserList?token=" + localStorage.token,
 					page: true,
 					limit: 5,
 					limits: [5, 10, 15, 20, 25, 30],
@@ -91,10 +88,26 @@
 								title: '笔试者姓名'
 							}, {
 								field: 'startTime',
-								title: '笔试开始时间'
+								title: '笔试开始时间',
+								templet: function(d) {
+									if(d.startTime == null) return "";
+									else {
+										var d = new Date(d.startTime);
+										return formatDate(d);
+									}
+								},
+								sort: true
 							}, {
 								field: 'endTime',
-								title: '笔试结束时间'
+								title: '笔试结束时间',
+								templet: function(d) {
+									if(d.endTime == null) return "";
+									else {
+										var d = new Date(d.endTime);
+										return formatDate(d);
+									}
+								},
+								sort: true
 							},
 							{
 								field: 'bszt',
@@ -111,7 +124,7 @@
 								fixed: 'right',
 								title: '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;操作',
 								toolbar: '#barDemo',
-//								templet: titleTpl,
+								//								templet: titleTpl,
 								width: 180
 							}
 
@@ -123,18 +136,22 @@
 				table.on('tool(test)', function(obj) {
 					var data = obj.data;
 					//console.log(obj)
-					if(obj.event === 'del') {
-						layer.confirm('真的删除数据吗', function(index) {
-							obj.del();
-							layer.close(index);
-						});
+					if(obj.event === 'edit') {
+						alert('编辑');
+					}
+					if(obj.event === 'view') {
+						alert('查看');
+					}
+					if(obj.event === 'playback') {
+						alert('回放');
 					}
 				});
 			});
 
-			$("#addBs").click(function() {
-				window.open("examPublish.html", "iframe")
-			})
+			//			$("#addBs").click(function() {
+			//				alert("11");
+			//				window.open("examPublish.html", "iframe")
+			//			})
 		</script>
 	</body>
 
