@@ -21,69 +21,47 @@
 						<div class="layui-card-header">笔试新增</div>
 
 						<div class="layui-card-body">
-						
+							<form class="layui-form">
 							<div class="layui-form-item">
 								<label class="layui-form-label">笔试题：</label>
 							</div>
-
 							<!--存放内容-->
-							<textarea class="layui-textarea" id="LAY_demo1" style="display: none">
-                     
-                   			</textarea>
-							<hr class="layui-bg-red">
-							<div class="layui-form-item">
-								<button class="layui-btn layui-form-label" style="width:100px; background-color:#007DDB;padding-right: 20px;">生成URL</button>
-								<div class="layui-input-block">
-									<input type="text" name="URL" lay-verify="title" autocomplete="off" placeholder="给面试者的链接" class="layui-input">
-								</div>
+							<textarea class="layui-textarea" id="subject" lay-verify="required"></textarea>
+							<div class="site-demo-button" style="margin-top: 40px;">
+								<button class="layui-btn" lay-submit lay-filter="saveExam">保存笔试题</button>
 							</div>
-
-							<div class="site-demo-button" style="margin-top: 40px; ">
-								<button class="layui-btn site-demo-layedit">保存笔试</button>
-
-								<button class="layui-btn site-demo-layedit" style="float:right;">返回列表</button>
-							</div>
-
+						</form>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<script src="../../layui/layui.js"></script>
+		<script type="text/javascript" src="../../js/jquery.min.js" ></script>
 		<script>
-			layui.use('layedit', function() {
-				var layedit = layui.layedit,
-					$ = layui.jquery;
-				//构建一个默认的编辑器
-				var index = layedit.build('LAY_demo1', {
-						tool: [
-							'strong' //加粗
-							, 'italic' //斜体
-							, 'underline' //下划线
-							, 'del' //删除线
+			layui.use(['form','layer'], function () {
+				var form = layui.form
+					, layer = layui.layer
 
-							, '|' //分割线
-
-							, 'left' //左对齐
-							, 'center' //居中对齐
-							, 'right' //右对齐
-						]
-					}
-
-				);
-
-				//编辑器外部操作
-				var active = {
-					content: function() {
-						alert(layedit.getContent(index)); //获取编辑器内容
-					}
-				};
-
-				$('.site-demo-layedit').on('click', function() {
-					var type = $(this).data('type');
-					active[type] ? active[type].call(this) : '';
+				form.on('submit(saveExam)', function (data) {
+					$.ajax({
+						type: 'post',
+						url: 'http://localhost:8080/addNewQuestion',
+						data: {
+							subject: $("#subject").val(),
+							token: localStorage.getItem("token")
+						},
+						dataType: 'json',
+						async: true,
+						success: function (res) {					
+								layer.alert(res.msg);
+						},
+						error: function (res) {
+							layer.alert(res.msg);
+						}
+					})
+					return false;
 				});
-
 			});
 		</script>
 	</body>
